@@ -1,0 +1,27 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+    </style>
+
+    <!-- LinearLayout styles -->
+    <style name="LinearLayout"></style>
+
+    <style name="LinearLayout.Vertical">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:background">@color/nav_drawer_background</item>
+        <item name="android:animateLayoutChanges">true</item>
+    </style>
+
+    <!-- ScrollView styles -->
+    <style name="ScrollView"></style>
+
+    <style name="ScrollView.Base">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+</resources>

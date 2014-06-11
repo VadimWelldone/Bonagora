@@ -217,10 +217,8 @@ public class NavigationDrawerFragment extends Fragment implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
+        //retrieve view tag
         int[] tag = (int[])v.getTag();
-        ViewGroup nested = (ViewGroup)mDrawerViewGroup.getChildAt(tag[0]);
-        TextView selectedView = (TextView)nested.getChildAt(tag[1]);
-        Toast.makeText(getActivity(), selectedView.getText() + " " + tag[0] + " " + tag[1] + " " + tag[2], Toast.LENGTH_SHORT).show();
 
         //hide all elements from the same level
         ViewGroup nestedViewGroup = (ViewGroup)mDrawerViewGroup.getChildAt(tag[KEY_NESTING_LEVEL]);
@@ -243,9 +241,6 @@ public class NavigationDrawerFragment extends Fragment implements View.OnClickLi
             for (int position = 0; position < descendantsViewGroup.getChildCount(); position++) {
                 View view = descendantsViewGroup.getChildAt(position);
                 int[] tag1 = (int[]) view.getTag();
-              //  Log.e("Tag value", tag1[0] + " "+ tag1[1] + " " + tag1[2]);
-            //    Log.e("Tag value1" , tag[0] + " "+ tag[1] + " " + tag[2]);
-
                if (tag[KEY_POSITION] == tag1[KEY_PARENT_POSITION]) {
                     view.setVisibility(View.VISIBLE);
               }
@@ -374,7 +369,6 @@ public class NavigationDrawerFragment extends Fragment implements View.OnClickLi
         tag[KEY_NESTING_LEVEL] = level;
         tag[KEY_POSITION] = position;
         tag[KEY_PARENT_POSITION] = parentPosition;
-        Log.d("all", title+" lvl="+level+" pos="+position+" parPos"+parentPosition);
         view.setTag(tag);
         view.setOnClickListener(this);
         return view;

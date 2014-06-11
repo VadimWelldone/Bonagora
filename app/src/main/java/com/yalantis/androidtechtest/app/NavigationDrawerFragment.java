@@ -220,32 +220,44 @@ public class NavigationDrawerFragment extends Fragment implements View.OnClickLi
         //retrieve view tag
         int[] tag = (int[])v.getTag();
 
-        //hide all elements from the same level
-        ViewGroup nestedViewGroup = (ViewGroup)mDrawerViewGroup.getChildAt(tag[KEY_NESTING_LEVEL]);
-        for(int position = 0; position < nestedViewGroup.getChildCount(); position++) {
-            if(position != tag[KEY_POSITION]) {
-                nestedViewGroup.getChildAt(position).setVisibility(View.GONE);
+        if(tag[KEY_NESTING_LEVEL] == Utils.NESTING_LEVEL.ZERO_LEVEL.ordinal()) {
+            v.setVisibility(View.GONE);
+            ViewGroup firstLvlViewGroup = (ViewGroup)mDrawerViewGroup.getChildAt(Utils.NESTING_LEVEL.FIRST_LEVEL.ordinal());
+            firstLvlViewGroup.setVisibility(View.VISIBLE);
+            for(int position = 0; position < firstLvlViewGroup.getChildCount(); position++) {
+                firstLvlViewGroup.getChildAt(position).setVisibility(View.VISIBLE);
             }
-        }
+            mDrawerViewGroup.getChildAt(Utils.NESTING_LEVEL.SECOND_LEVEL.ordinal()).setVisibility(View.GONE);
+            mDrawerViewGroup.getChildAt(Utils.NESTING_LEVEL.THIRD_LEVEL.ordinal()).setVisibility(View.GONE);
+            mDrawerViewGroup.getChildAt(Utils.NESTING_LEVEL.FOURTH_LEVEL.ordinal()).setVisibility(View.GONE);
+        } else {
+            mDrawerViewGroup.getChildAt(Utils.NESTING_LEVEL.ZERO_LEVEL.ordinal()).setVisibility(View.VISIBLE);
+            //hide all elements from the same level
+            ViewGroup nestedViewGroup = (ViewGroup) mDrawerViewGroup.getChildAt(tag[KEY_NESTING_LEVEL]);
+            for (int position = 0; position < nestedViewGroup.getChildCount(); position++) {
+                if (position != tag[KEY_POSITION]) {
+                    nestedViewGroup.getChildAt(position).setVisibility(View.GONE);
+                }
+            }
 
-        //hide all elements from the previous levels
-        for(int position = tag[KEY_NESTING_LEVEL] + 2; position <= Utils.NESTING_LEVEL.FOURTH_LEVEL.ordinal(); position++) {
-            mDrawerViewGroup.getChildAt(position).setVisibility(View.GONE);
-        }
+            //hide all elements from the previous levels
+            for (int position = tag[KEY_NESTING_LEVEL] + 2; position <= Utils.NESTING_LEVEL.FOURTH_LEVEL.ordinal(); position++) {
+                mDrawerViewGroup.getChildAt(position).setVisibility(View.GONE);
+            }
 
-        //show belong elements from next level (current_level + 1)
-        if(tag[KEY_NESTING_LEVEL] + 1 < mDrawerViewGroup.getChildCount()) {
-            ViewGroup descendantsViewGroup = (ViewGroup) mDrawerViewGroup.getChildAt(tag[KEY_NESTING_LEVEL] + 1);
-            descendantsViewGroup.setVisibility(View.VISIBLE);
-            Log.e("Child count", descendantsViewGroup.getChildCount() + "");
-            for (int position = 0; position < descendantsViewGroup.getChildCount(); position++) {
-                View view = descendantsViewGroup.getChildAt(position);
-                int[] tag1 = (int[]) view.getTag();
-               if (tag[KEY_POSITION] == tag1[KEY_PARENT_POSITION]) {
-                    view.setVisibility(View.VISIBLE);
-              }
-               else {
-                    view.setVisibility(View.GONE);
+            //show belong elements from next level (current_level + 1)
+            if (tag[KEY_NESTING_LEVEL] + 1 < mDrawerViewGroup.getChildCount()) {
+                ViewGroup descendantsViewGroup = (ViewGroup) mDrawerViewGroup.getChildAt(tag[KEY_NESTING_LEVEL] + 1);
+                descendantsViewGroup.setVisibility(View.VISIBLE);
+                Log.e("Child count", descendantsViewGroup.getChildCount() + "");
+                for (int position = 0; position < descendantsViewGroup.getChildCount(); position++) {
+                    View view = descendantsViewGroup.getChildAt(position);
+                    int[] tag1 = (int[]) view.getTag();
+                    if (tag[KEY_POSITION] == tag1[KEY_PARENT_POSITION]) {
+                        view.setVisibility(View.VISIBLE);
+                    } else {
+                        view.setVisibility(View.GONE);
+                    }
                 }
             }
         }
@@ -253,6 +265,7 @@ public class NavigationDrawerFragment extends Fragment implements View.OnClickLi
 
     //show only first level menu items
     private void showInitialState() {
+        mDrawerViewGroup.getChildAt(Utils.NESTING_LEVEL.ZERO_LEVEL.ordinal()).setVisibility(View.GONE);
         mDrawerViewGroup.getChildAt(Utils.NESTING_LEVEL.SECOND_LEVEL.ordinal()).setVisibility(View.GONE);
         mDrawerViewGroup.getChildAt(Utils.NESTING_LEVEL.THIRD_LEVEL.ordinal()).setVisibility(View.GONE);
         mDrawerViewGroup.getChildAt(Utils.NESTING_LEVEL.FOURTH_LEVEL.ordinal()).setVisibility(View.GONE);
@@ -351,6 +364,7 @@ public class NavigationDrawerFragment extends Fragment implements View.OnClickLi
                     }
                 }
             }
+            mDrawerViewGroup.addView(createMenuItem(getString(R.string.menu_item_all_products), Utils.NESTING_LEVEL.ZERO_LEVEL.ordinal(), 0, 0));
             mDrawerViewGroup.addView(firstLevelViewGroup);
             mDrawerViewGroup.addView(secondLevelViewGroup);
             mDrawerViewGroup.addView(thirdLevelViewGroup);

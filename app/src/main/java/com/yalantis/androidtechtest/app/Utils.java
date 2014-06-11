@@ -5,6 +5,6 @@ package com.yalantis.androidtechtest.app;
  */
 public class Utils {
     enum NESTING_LEVEL {
-        FIRST_LEVEL, SECOND_LEVEL, THIRD_LEVEL, FOURTH_LEVEL
+        ZERO_LEVEL, FIRST_LEVEL, SECOND_LEVEL, THIRD_LEVEL, FOURTH_LEVEL
     }
 }

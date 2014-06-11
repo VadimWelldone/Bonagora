@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -217,40 +218,47 @@ public class NavigationDrawerFragment extends Fragment implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
+        //retrieve view tag
         int[] tag = (int[])v.getTag();
-        ViewGroup nested = (ViewGroup)mDrawerViewGroup.getChildAt(tag[0]);
-        TextView selectedView = (TextView)nested.getChildAt(tag[1]);
-        Toast.makeText(getActivity(), selectedView.getText() + " " + tag[0] + " " + tag[1] + " " + tag[2], Toast.LENGTH_SHORT).show();
 
-        //hide all elements from the same level
-        ViewGroup nestedViewGroup = (ViewGroup)mDrawerViewGroup.getChildAt(tag[KEY_NESTING_LEVEL]);
-        for(int position = 0; position < nestedViewGroup.getChildCount(); position++) {
-            if(position != tag[KEY_POSITION]) {
-                nestedViewGroup.getChildAt(position).setVisibility(View.GONE);
+        if(tag[KEY_NESTING_LEVEL] == Utils.NESTING_LEVEL.ZERO_LEVEL.ordinal()) {
+            v.setVisibility(View.GONE);
+            ViewGroup firstLvlViewGroup = (ViewGroup)mDrawerViewGroup.getChildAt(Utils.NESTING_LEVEL.FIRST_LEVEL.ordinal());
+            firstLvlViewGroup.setVisibility(View.VISIBLE);
+            for(int position = 0; position < firstLvlViewGroup.getChildCount(); position++) {
+                firstLvlViewGroup.getChildAt(position).setVisibility(View.VISIBLE);
             }
-        }
+            mDrawerViewGroup.getChildAt(Utils.NESTING_LEVEL.SECOND_LEVEL.ordinal()).setVisibility(View.GONE);
+            mDrawerViewGroup.getChildAt(Utils.NESTING_LEVEL.THIRD_LEVEL.ordinal()).setVisibility(View.GONE);
+            mDrawerViewGroup.getChildAt(Utils.NESTING_LEVEL.FOURTH_LEVEL.ordinal()).setVisibility(View.GONE);
+        } else {
+            mDrawerViewGroup.getChildAt(Utils.NESTING_LEVEL.ZERO_LEVEL.ordinal()).setVisibility(View.VISIBLE);
+            //hide all elements from the same level
+            ViewGroup nestedViewGroup = (ViewGroup) mDrawerViewGroup.getChildAt(tag[KEY_NESTING_LEVEL]);
+            for (int position = 0; position < nestedViewGroup.getChildCount(); position++) {
+                if (position != tag[KEY_POSITION]) {
+                    nestedViewGroup.getChildAt(position).setVisibility(View.GONE);
+                }
+            }
 
-        //hide all elements from the previous levels
-        for(int position = tag[KEY_NESTING_LEVEL] + 2; position <= Utils.NESTING_LEVEL.FOURTH_LEVEL.ordinal(); position++) {
-            mDrawerViewGroup.getChildAt(position).setVisibility(View.GONE);
-        }
+            //hide all elements from the previous levels
+            for (int position = tag[KEY_NESTING_LEVEL] + 2; position <= Utils.NESTING_LEVEL.FOURTH_LEVEL.ordinal(); position++) {
+                mDrawerViewGroup.getChildAt(position).setVisibility(View.GONE);
+            }
 
-        //show belong elements from next level (current_level + 1)
-        if(tag[KEY_NESTING_LEVEL] + 1 < mDrawerViewGroup.getChildCount()) {
-            ViewGroup descendantsViewGroup = (ViewGroup) mDrawerViewGroup.getChildAt(tag[KEY_NESTING_LEVEL] + 1);
-            descendantsViewGroup.setVisibility(View.VISIBLE);
-            Log.e("Child count", descendantsViewGroup.getChildCount() + "");
-            for (int position = 0; position < descendantsViewGroup.getChildCount(); position++) {
-                View view = descendantsViewGroup.getChildAt(position);
-                int[] tag1 = (int[]) view.getTag();
-              //  Log.e("Tag value", tag1[0] + " "+ tag1[1] + " " + tag1[2]);
-            //    Log.e("Tag value1" , tag[0] + " "+ tag[1] + " " + tag[2]);
-
-               if (tag[KEY_POSITION] == tag1[KEY_PARENT_POSITION]) {
-                    view.setVisibility(View.VISIBLE);
-              }
-               else {
-                    view.setVisibility(View.GONE);
+            //show belong elements from next level (current_level + 1)
+            if (tag[KEY_NESTING_LEVEL] + 1 < mDrawerViewGroup.getChildCount()) {
+                ViewGroup descendantsViewGroup = (ViewGroup) mDrawerViewGroup.getChildAt(tag[KEY_NESTING_LEVEL] + 1);
+                descendantsViewGroup.setVisibility(View.VISIBLE);
+                Log.e("Child count", descendantsViewGroup.getChildCount() + "");
+                for (int position = 0; position < descendantsViewGroup.getChildCount(); position++) {
+                    View view = descendantsViewGroup.getChildAt(position);
+                    int[] tag1 = (int[]) view.getTag();
+                    if (tag[KEY_POSITION] == tag1[KEY_PARENT_POSITION]) {
+                        view.setVisibility(View.VISIBLE);
+                    } else {
+                        view.setVisibility(View.GONE);
+                    }
                 }
             }
         }
@@ -258,6 +266,7 @@ public class NavigationDrawerFragment extends Fragment implements View.OnClickLi
 
     //show only first level menu items
     private void showInitialState() {
+        mDrawerViewGroup.getChildAt(Utils.NESTING_LEVEL.ZERO_LEVEL.ordinal()).setVisibility(View.GONE);
         mDrawerViewGroup.getChildAt(Utils.NESTING_LEVEL.SECOND_LEVEL.ordinal()).setVisibility(View.GONE);
         mDrawerViewGroup.getChildAt(Utils.NESTING_LEVEL.THIRD_LEVEL.ordinal()).setVisibility(View.GONE);
         mDrawerViewGroup.getChildAt(Utils.NESTING_LEVEL.FOURTH_LEVEL.ordinal()).setVisibility(View.GONE);
@@ -286,14 +295,17 @@ public class NavigationDrawerFragment extends Fragment implements View.OnClickLi
             //create container for first-level menu items
             LinearLayout firstLevelViewGroup = new LinearLayout(getActivity());
             //enable layout transition
-            firstLevelViewGroup.setLayoutTransition(new LayoutTransition());
+            LayoutTransition layoutTransition = new LayoutTransition();
+            layoutTransition.setAnimator(LayoutTransition.CHANGE_APPEARING, null);
+            layoutTransition.setAnimator(LayoutTransition.CHANGE_DISAPPEARING, null);
+            firstLevelViewGroup.setLayoutTransition(layoutTransition);
             //set orientation for LinearLayout
             firstLevelViewGroup.setOrientation(LinearLayout.VERTICAL);
 
             //create container for second-level menu items
             LinearLayout secondLevelViewGroup = new LinearLayout(getActivity());
             //enable layout transition
-            secondLevelViewGroup.setLayoutTransition(new LayoutTransition());
+            secondLevelViewGroup.setLayoutTransition(layoutTransition);
             //set orientation for LinearLayout
             secondLevelViewGroup.setOrientation(LinearLayout.VERTICAL);
 
@@ -356,6 +368,7 @@ public class NavigationDrawerFragment extends Fragment implements View.OnClickLi
                     }
                 }
             }
+            mDrawerViewGroup.addView(createMenuItem(getString(R.string.menu_item_all_products), Utils.NESTING_LEVEL.ZERO_LEVEL.ordinal(), 0, 0));
             mDrawerViewGroup.addView(firstLevelViewGroup);
             mDrawerViewGroup.addView(secondLevelViewGroup);
             mDrawerViewGroup.addView(thirdLevelViewGroup);
@@ -374,7 +387,6 @@ public class NavigationDrawerFragment extends Fragment implements View.OnClickLi
         tag[KEY_NESTING_LEVEL] = level;
         tag[KEY_POSITION] = position;
         tag[KEY_PARENT_POSITION] = parentPosition;
-        Log.d("all", title+" lvl="+level+" pos="+position+" parPos"+parentPosition);
         view.setTag(tag);
         view.setOnClickListener(this);
         return view;

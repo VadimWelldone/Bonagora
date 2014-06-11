@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -294,14 +295,17 @@ public class NavigationDrawerFragment extends Fragment implements View.OnClickLi
             //create container for first-level menu items
             LinearLayout firstLevelViewGroup = new LinearLayout(getActivity());
             //enable layout transition
-            firstLevelViewGroup.setLayoutTransition(new LayoutTransition());
+            LayoutTransition layoutTransition = new LayoutTransition();
+            layoutTransition.setAnimator(LayoutTransition.CHANGE_APPEARING, null);
+            layoutTransition.setAnimator(LayoutTransition.CHANGE_DISAPPEARING, null);
+            firstLevelViewGroup.setLayoutTransition(layoutTransition);
             //set orientation for LinearLayout
             firstLevelViewGroup.setOrientation(LinearLayout.VERTICAL);
 
             //create container for second-level menu items
             LinearLayout secondLevelViewGroup = new LinearLayout(getActivity());
             //enable layout transition
-            secondLevelViewGroup.setLayoutTransition(new LayoutTransition());
+            secondLevelViewGroup.setLayoutTransition(layoutTransition);
             //set orientation for LinearLayout
             secondLevelViewGroup.setOrientation(LinearLayout.VERTICAL);
 

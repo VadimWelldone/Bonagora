@@ -12,7 +12,6 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:orientation">vertical</item>
-        <item name="android:background">@color/nav_drawer_background</item>
         <item name="android:animateLayoutChanges">true</item>
     </style>
 
@@ -22,6 +21,7 @@
     <style name="ScrollView.Base">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
+        <item name="android:background">@color/nav_drawer_background</item>
     </style>
 
 </resources>

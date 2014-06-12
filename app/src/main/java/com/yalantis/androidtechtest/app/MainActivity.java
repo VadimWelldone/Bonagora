@@ -46,20 +46,6 @@ public class MainActivity extends ActionBarActivity{
                 (DrawerLayout) findViewById(R.id.drawer_layout));
     }
 
-    public void onSectionAttached(int number) {
-        switch (number) {
-            case 1:
-                mTitle = getString(R.string.title_section1);
-                break;
-            case 2:
-                mTitle = getString(R.string.title_section2);
-                break;
-            case 3:
-                mTitle = getString(R.string.title_section3);
-                break;
-        }
-    }
-
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
@@ -99,12 +85,12 @@ public class MainActivity extends ActionBarActivity{
             return rootView;
         }
 
-        @Override
+        /*@Override
         public void onAttach(Activity activity) {
             super.onAttach(activity);
             ((MainActivity) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
-        }
+        }*/
     }
 
 }

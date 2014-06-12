@@ -1,8 +1,10 @@
-package com.yalantis.androidtechtest.app;
+package com.yalantis.androidtechtest.app.activity;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import com.yalantis.androidtechtest.app.fragment.NavigationDrawerFragment;
+import com.yalantis.androidtechtest.app.R;
 
 
 public class MainActivity extends ActionBarActivity{

@@ -3,6 +3,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:id="@+id/nav_drawer_view_group"
         xmlns:tools="http://schemas.android.com/tools"
-              tools:context="com.yalantis.androidtechtest.app.NavigationDrawerFragment"
+              tools:context="com.yalantis.androidtechtest.app.fragment.NavigationDrawerFragment"
               style="@style/LinearLayout.Vertical"/>
     </ScrollView>

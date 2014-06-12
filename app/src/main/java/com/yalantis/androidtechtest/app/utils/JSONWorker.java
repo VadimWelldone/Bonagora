@@ -75,47 +75,22 @@ public class JSONWorker {
             JSONArray firstLvlArray = new JSONArray(jsonData);
             int secondLvl = 0, thirdLvl = 0, fourthLvl = 0;
             for (int firstLvl = 0; firstLvl < firstLvlArray.length(); firstLvl++) {
-                JSONObject firstLvlObj = firstLvlArray.getJSONObject(firstLvl);
-                if (firstLvlObj.has(TAG_TITLE)) {
-                    String title = firstLvlObj.get(TAG_TITLE).toString();
-                    View view = createMenuItem(title, Utils.NESTING_LEVEL.FIRST_LEVEL.ordinal(), firstLvl, -1, true);
-
-                    view.setBackgroundColor(mContext.getResources().getColor(Consts.MENU_CATEGORY_COLORS[firstLvl]));
-                    ((TextView)view.findViewById(R.id.text_view)).setTextColor(Color.WHITE);
-                    ((TextView)view.findViewById(R.id.text_view)).setTypeface(null, Typeface.BOLD);
-                    mFirstLevelViewGroup.addView(view);
-                }
+                JSONObject firstLvlObj = processJSONObj(firstLvlArray.getJSONObject(firstLvl), mFirstLevelViewGroup, Utils.NESTING_LEVEL.FIRST_LEVEL.ordinal(), firstLvl, -1);
                 if (firstLvlObj.has(TAG_CHILDREN)) {
                     JSONArray secondLvlArray = firstLvlObj.getJSONArray(TAG_CHILDREN);
                     for (int j = 0; j < secondLvlArray.length(); j++) {
 
-                        JSONObject secondLvlObj = secondLvlArray.getJSONObject(j);
-                        if (secondLvlObj.has(TAG_TITLE)) {
-                            String title = secondLvlObj.get(TAG_TITLE).toString();
-                            View view = createMenuItem(title, Utils.NESTING_LEVEL.SECOND_LEVEL.ordinal(), secondLvl, firstLvl, false);
-                            addViewToContainer(view, mSecondLevelViewGroup);
-
-                        }
+                        JSONObject secondLvlObj = processJSONObj(secondLvlArray.getJSONObject(j), mSecondLevelViewGroup, Utils.NESTING_LEVEL.SECOND_LEVEL.ordinal(), secondLvl, firstLvl);
                         if (secondLvlObj.has(TAG_CHILDREN)) {
                             JSONArray thirdLvlArray = secondLvlObj.getJSONArray(TAG_CHILDREN);
                             for (int k = 0; k < thirdLvlArray.length(); k++) {
 
-                                JSONObject thirdLvlObj = thirdLvlArray.getJSONObject(k);
-                                if (thirdLvlObj.has(TAG_TITLE)) {
-                                    String title = thirdLvlObj.get(TAG_TITLE).toString();
-                                    View view = createMenuItem(title, Utils.NESTING_LEVEL.THIRD_LEVEL.ordinal(), thirdLvl, secondLvl, false);
-                                    addViewToContainer(view, mThirdLevelViewGroup);
-                                }
+                                JSONObject thirdLvlObj = processJSONObj(thirdLvlArray.getJSONObject(k), mThirdLevelViewGroup, Utils.NESTING_LEVEL.THIRD_LEVEL.ordinal(), thirdLvl, secondLvl);
                                 if (thirdLvlObj.has(TAG_CHILDREN)) {
                                     JSONArray fourthLvlArray = thirdLvlObj.getJSONArray(TAG_CHILDREN);
                                     for (int m = 0; m < fourthLvlArray.length(); m++) {
 
-                                        JSONObject fourthLvlObj = fourthLvlArray.getJSONObject(m);
-                                        if (fourthLvlObj.has(TAG_TITLE)) {
-                                            String title = fourthLvlObj.get(TAG_TITLE).toString();
-                                            View view = createMenuItem(title, Utils.NESTING_LEVEL.FOURTH_LEVEL.ordinal(), fourthLvl, thirdLvl, false);
-                                            addViewToContainer(view, mFourthLevelViewGroup);
-                                        }
+                                        processJSONObj(fourthLvlArray.getJSONObject(m), mFourthLevelViewGroup, Utils.NESTING_LEVEL.FOURTH_LEVEL.ordinal(), fourthLvl, thirdLvl);
                                         fourthLvl++;
                                     }
                                 }
@@ -137,35 +112,25 @@ public class JSONWorker {
     private void createContainers() {
         //create container for first-level menu items
         mFirstLevelViewGroup = new LinearLayout(mContext);
-        //enable layout transition
+
+        //create layout transition
         LayoutTransition layoutTransition = new LayoutTransition();
         layoutTransition.setAnimator(LayoutTransition.CHANGE_APPEARING, null);
         layoutTransition.setAnimator(LayoutTransition.CHANGE_DISAPPEARING, null);
-        mFirstLevelViewGroup.setLayoutTransition(layoutTransition);
-        //set orientation for LinearLayout
-        mFirstLevelViewGroup.setOrientation(LinearLayout.VERTICAL);
+
+        setContainerTransitionAndOrientation(mFirstLevelViewGroup, layoutTransition);
 
         //create container for second-level menu items
         mSecondLevelViewGroup = new LinearLayout(mContext);
-        //enable layout transition
-        mSecondLevelViewGroup.setLayoutTransition(layoutTransition);
-        //set orientation for LinearLayout
-        mSecondLevelViewGroup.setOrientation(LinearLayout.VERTICAL);
+        setContainerTransitionAndOrientation(mSecondLevelViewGroup, layoutTransition);
 
         //create container for third-level menu items
         mThirdLevelViewGroup = new LinearLayout(mContext);
-        //enable layout transition
-        mThirdLevelViewGroup.setLayoutTransition(new LayoutTransition());
-        //set orientation for LinearLayout
-        mThirdLevelViewGroup.setOrientation(LinearLayout.VERTICAL);
+        setContainerTransitionAndOrientation(mThirdLevelViewGroup, new LayoutTransition());
 
         //create container for fourth-level menu items
         mFourthLevelViewGroup = new LinearLayout(mContext);
-        //enable layout transition
-        layoutTransition = new LayoutTransition();
-        mFourthLevelViewGroup.setLayoutTransition(layoutTransition);
-        //set orientation for LinearLayout
-        mFourthLevelViewGroup.setOrientation(LinearLayout.VERTICAL);
+        setContainerTransitionAndOrientation(mFourthLevelViewGroup, new LayoutTransition());
     }
 
     //add specific level containers into one container
@@ -185,9 +150,16 @@ public class JSONWorker {
         container.addView(view);
     }
 
+    //set LayoutTransition and LinearLayout orientation property for each level container
+    private void setContainerTransitionAndOrientation(LinearLayout container, LayoutTransition transition) {
+        //enable layout transition
+        container.setLayoutTransition(transition);
+        //set orientation for LinearLayout
+        container.setOrientation(LinearLayout.VERTICAL);
+    }
 
     //create menu item with particular tag and OnClickListener
-    private LinearLayout createMenuItem(String title, int level, int position, int parentPosition, boolean isDisableDivider) {
+    private LinearLayout createMenuItem(String title, int level, int position, int parentPosition, boolean isFirstLevel) {
         //inflate menu item
         LinearLayout layout = (LinearLayout)((MainActivity)mContext).getLayoutInflater().inflate(R.layout.custom_menu_item, null);
 
@@ -199,7 +171,7 @@ public class JSONWorker {
         textView.setTypeface(null, Typeface.BOLD);
 
         //define neediness of divider
-        if(isDisableDivider) {
+        if(isFirstLevel) {
             layout.findViewById(R.id.divider).setVisibility(View.GONE);
         }
 
@@ -214,6 +186,26 @@ public class JSONWorker {
         layout.setOnClickListener(mListener);
 
         return layout;
+    }
+
+    private JSONObject processJSONObj(JSONObject json, ViewGroup container, int nestingLevel, int position, int parentPosition) {
+        try {
+            if (json.has(TAG_TITLE)) {
+                String title = json.get(TAG_TITLE).toString();
+                boolean isFirstLevel = nestingLevel == Utils.NESTING_LEVEL.FIRST_LEVEL.ordinal() ? true : false;
+                View view = createMenuItem(title, nestingLevel, position, parentPosition, isFirstLevel);
+                if(isFirstLevel) {
+                    view.setBackgroundColor(mContext.getResources().getColor(Consts.MENU_CATEGORY_COLORS[position]));
+                    ((TextView) view.findViewById(R.id.text_view)).setTextColor(Color.WHITE);
+                    ((TextView) view.findViewById(R.id.text_view)).setTypeface(null, Typeface.BOLD);
+                }
+                addViewToContainer(view, container);
+
+            }
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
     }
 
 }

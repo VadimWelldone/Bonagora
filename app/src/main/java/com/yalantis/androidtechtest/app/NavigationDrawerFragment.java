@@ -421,7 +421,7 @@ public class NavigationDrawerFragment extends Fragment implements View.OnClickLi
                     }
                 }
             }
-            View view = createMenuItem(getString(R.string.menu_item_all_products), Utils.NESTING_LEVEL.ZERO_LEVEL.ordinal(), 0, 0);
+            View view = createMenuItem(getString(R.string.menu_item_all_products), Utils.NESTING_LEVEL.ZERO_LEVEL.ordinal(), 0, 0, false);
             view.setBackgroundColor(getResources().getColor(android.R.color.transparent));
             mDrawerViewGroup.addView(view);
 //            firstLevelViewGroup.setDividerDrawable(getResources().getDrawable(R.drawable.menu_item_background));

@@ -1,3 +1,12 @@
 <resources>
-    <color name="nav_drawer_background">#CCCC</color>
+    <color name="nav_drawer_background">#262626</color>
+    <color name="menu_category_mens">#f95852</color>
+    <color name="menu_category_womens">#894d76</color>
+    <color name="menu_category_tech">#36779d</color>
+    <color name="menu_category_media">#54afba</color>
+    <color name="menu_category_home">#69ba89</color>
+    <color name="menu_category_art">#66daa9</color>
+    <color name="menu_category_other">#656e7d</color>
+    <color name="menu_upper_level_item">#888888</color>
+    <color name="menu_divider">#383838</color>
 </resources>

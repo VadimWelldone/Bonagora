@@ -15,6 +15,18 @@
         <item name="android:animateLayoutChanges">true</item>
     </style>
 
+    <!-- LinearLayout styles -->
+    <style name="RelativeLayout"></style>
+
+    <style name="RelativeLayout.Base">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:paddingLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingRight">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingTop">@dimen/activity_vertical_margin</item>
+        <item name="android:paddingBottom">@dimen/activity_vertical_margin</item>
+    </style>
+
     <!-- ScrollView styles -->
     <style name="ScrollView"></style>
 
@@ -22,6 +34,18 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:background">@color/nav_drawer_background</item>
+    </style>
+
+    <!-- TextView styles -->
+    <style name="TextView"></style>
+
+    <style name="TextView.Base">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="TextView.Base.MatchParent">
+        <item name="android:layout_width">match_parent</item>
     </style>
 
 </resources>

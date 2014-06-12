@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import com.yalantis.androidtechtest.app.R;
+import com.yalantis.androidtechtest.app.utils.ClickEventsProcessor;
 import com.yalantis.androidtechtest.app.utils.Consts;
 import com.yalantis.androidtechtest.app.utils.JSONWorker;
 import com.yalantis.androidtechtest.app.utils.Utils;
@@ -41,6 +42,7 @@ public class NavigationDrawerFragment extends Fragment {
     private int mCurrentColor;
     //currently selected view
     private View mSelectedView;
+    private ClickEventsProcessor mProcessor;
 
     public NavigationDrawerFragment() {
     }
@@ -65,6 +67,7 @@ public class NavigationDrawerFragment extends Fragment {
     public void onResume() {
         super.onResume();
         showInitialState();
+        mProcessor = new ClickEventsProcessor(getActivity(), mDrawerViewGroup);
     }
 
     /**
@@ -255,12 +258,12 @@ public class NavigationDrawerFragment extends Fragment {
                 }
 
                 if (tag[Consts.KEY_NESTING_LEVEL] == Utils.NESTING_LEVEL.ZERO_LEVEL.ordinal()) {
-                    showOnlyFirstLevelMenu(v);
+                    mProcessor.showOnlyFirstLevelMenu(v);
                 } else {
                     //change background and text color for selected view
-                    changeCurrentlySelectedViewStyle(v);
+                    mProcessor.changeCurrentlySelectedViewStyle(v, mCurrentColor);
                     //change background and text color for previously selected view
-                    changePreviouslySelectedViewStyle(v);
+                    mProcessor.changePreviouslySelectedViewStyle(v, mSelectedView);
 
                     //save new selected view
                     mSelectedView = v;
@@ -268,13 +271,13 @@ public class NavigationDrawerFragment extends Fragment {
                     mDrawerViewGroup.getChildAt(Utils.NESTING_LEVEL.ZERO_LEVEL.ordinal()).setVisibility(View.VISIBLE);
 
                     //hide all elements from the same level
-                    hideElementsFromSameLevel(tag[Consts.KEY_NESTING_LEVEL], tag[Consts.KEY_POSITION]);
+                    mProcessor.hideElementsFromSameLevel(tag[Consts.KEY_NESTING_LEVEL], tag[Consts.KEY_POSITION]);
 
                     //hide all elements from the previous levels
-                    hidePreviousLevels(tag[Consts.KEY_NESTING_LEVEL]);
+                    mProcessor.hidePreviousLevels(tag[Consts.KEY_NESTING_LEVEL]);
 
                     //show belong elements from next level (current_level + 1)
-                    showChildElements(tag[Consts.KEY_NESTING_LEVEL], tag[Consts.KEY_POSITION]);
+                    mProcessor.showChildElements(tag[Consts.KEY_NESTING_LEVEL], tag[Consts.KEY_POSITION], mCurrentColor);
                 }
             }
         }
